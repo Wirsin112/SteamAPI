@@ -1,0 +1,122 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore.Metadata.Builders
+@using SteamAPI.Data
+@inject SignInManager<IdentityUser> SignInManager
+@using SteamAPI.Models
+@model SteamAPI.Models.Group
+@{
+    ViewData["Title"] = "Home Page";
+    var groups = (List<Group>)ViewData["groups"]!;
+    var context = ViewData["context"];
+    var testGroup = new Group {GameID = "105600", Password = "113", GameName = "Terraria", GroupName = "Terraria z ziomami", GroupSize = 4};
+    
+    
+}
+
+<script>
+    let password = '';
+    let group_name = '';
+    let game_link = '';
+    let context = ViewData["context"];
+    
+    function enter_group(id) {
+        console.log(id);
+        var getUrl = window.location;
+        var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+        window.location.href = baseUrl + "?group_id=" + id;
+    }
+    async function create_group() {
+        console.log(group_name);
+        console.log(password);
+        console.log(game_link);
+        var test =  _context.Group.Add();
+        let group = new Group( GameID = "105600", Password = "113", GameName = "Terraria", GroupName = "Terraria z ziomami", GroupSize = 4);
+        context.Group.Add(group);
+        await _context.SaveChangesAsync();
+    }
+    function join_group(id) {
+  
+    }
+      
+    function change_password_value(value){
+        password = value;
+    }
+    function change_group_name_value(value){
+        group_name = value;
+    }
+    function change_game_link_value(value){
+        game_link = value;
+    }
+</script>
+
+<style>
+    .container{
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    }
+    .container2{
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    .container2{
+        margin-right: 30px;
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    .container4{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .button{
+    min-width: 180px;
+    max-height: 90px;
+    }
+    .margin_text{
+    margin-left: 20px;
+    }
+   
+</style>
+
+<div class="background">
+    
+    @if (SignInManager.IsSignedIn(User)){
+        <div class="container4">
+            <div class="container">
+                
+                <form asp-controller="Home" asp-action="add_group_test" method="post">
+                    <button class="button">Create Group</button>
+                </form>
+                <div class="container2">
+                    <span class="margin_text">Group name</span>
+                    <input type="text" value=""  class="margin_text" onchange="change_group_name_value(this.value)"/>
+                </div>
+                <div class="container2">
+                    <span>Password if you want</span>
+                    <input type="password" value="" class="submit" name="Password" id="password" onchange="change_password_value(this.value)"/>
+                </div>
+                <div class="container2">
+                    <span>Steam store link</span>
+                    <input type="text" value="" class="submit" id="store" onchange="change_game_link_value(this.value)"/>
+                </div>
+            </div >
+            <div class="container4">
+                <button class="button" onclick="create_group()">Create Group</button>
+                <div class="container2">
+                    <span class="margin_text">Change your api key</span>
+                    <input type="text" value="" class="margin_text" id="store" onchange="change_api_key_value(this.value)"/>
+                </div>
+            </div>
+        </div>
+        <div class="groups">
+            @foreach (var group in groups)
+            {
+                <button class="group-selector" onclick="">@group.ID</button>
+            }
+        </div>
+    }
+    else
+    {
+        <p>Nie git</p>
+    }
+    </div>
